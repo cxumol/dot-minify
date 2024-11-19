@@ -1,0 +1,3 @@
+digraph {
+  foo:s -> bar:n [arrowhead=crow dir=both arrowtail=crow]
+}

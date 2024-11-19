@@ -1,0 +1,3 @@
+digraph G {
+  aneggtable [shape=egg, label=<yada yada <table><tr><td>item</td></tr></table>>];
+}

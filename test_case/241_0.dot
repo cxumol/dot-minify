@@ -1,0 +1,33 @@
+// from https://forum.graphviz.org/t/keeping-edges-above-nodes-in-a-digraph/1143
+digraph {
+	splines=true  
+	{ rank=same
+	0 [label="(" ]
+	1 [label="(" ]
+	2 [label=A ]
+	3 [label="*" ]
+	4 [label=B ]
+	5 [label="|" ]
+	6 [label=A ]
+	7 [label=C ]
+	8 [label=")" ]
+	9 [label=D ]
+	10 [label=")" ]
+
+	5 -> 6 	[style=invis]
+
+	2:e -> 3:w
+	4:e -> 5:w
+	6:e -> 7:w
+	7:e -> 8:w
+	9:e -> 10:w
+	0:e -> 1:w [color=red]
+	1:e -> 2:w [color=red]
+	3:e -> 4:w [color=red]
+	8:e -> 9:w [color=red]
+	2:ne -> 3:nw [color=red]
+	3:sw -> 2:se [color=red]
+	1:se -> 6:sw [color=red]
+	5:ne -> 8:nw [color=red]
+	}
+}

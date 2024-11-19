@@ -1,0 +1,12 @@
+digraph {
+  splines=true;
+  node [shape=octagon penwidth=7]
+
+  // Ensure node obstacles don't overlap in order to avoid:
+  // "Warning: some nodes with margin (3.20,3.20) touch - falling back to straight line edges"
+  // in which case splines will not be used
+  edge [len=1.6]
+
+  node1 -> node2:sw;
+  node1 -> node2:ne;
+}

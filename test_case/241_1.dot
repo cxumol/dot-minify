@@ -1,0 +1,40 @@
+digraph G {
+    nodesep = 0.5;
+    nodesep=1
+    splines=true
+    
+    subgraph directed{
+    rank=same
+    0 [width=0.75, height=0.75, fontsize=20];
+    1 [width=0.75, height=0.75, fontsize=20, shape=square];
+    2 [width=0.75, height=0.75, fontsize=20];
+    3 [width=0.75, height=0.75, fontsize=20];
+    4 [width=0.75, height=0.75, fontsize=20];
+    5 [width=0.75, height=0.75, fontsize=20, shape=square];
+    6 [width=0.75, height=0.75, fontsize=20];
+    7 [width=0.75, height=0.75, fontsize=20, shape=square];
+    8 [width=0.75, height=0.75, fontsize=20, shape=square];
+    9 [width=0.75, height=0.75, fontsize=20, shape=square];
+    10 [width=0.75, height=0.75, fontsize=20, shape=square];
+    11 [width=0.75, height=0.75, fontsize=20, shape=square];
+    12 [width=0.75, height=0.75, fontsize=20];
+
+            0->1->2->3->4->5->6->7->8->9->10->11->12;
+    }
+    subgraph undirected{
+      edge[tailport=n,headport=n];  // this fails
+     // edge[tailport=n]       // this works
+            0->1[dir=none, color=red];
+            0->2[dir=none, color=red];
+            1->9[dir=none, color=red];
+            2->3[dir=none, color=red];
+            2->8[dir=none, color=red];
+            3->4[dir=none, color=red];
+            4->8[dir=none, color=red];
+            7->9[dir=none, color=red];
+            8->9[dir=none, color=red];
+            9->10[dir=none, color=red];
+            9->11[dir=none, color=red];
+            10->11[dir=none, color=red];
+    }
+}

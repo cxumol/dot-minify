@@ -1,0 +1,79 @@
+
+
+digraph aaa {
+
+    graph [ fontname="Helvetica", layout="fdp", splines=ortho]
+    node [ fontname="Helvetica,Arial,sans-serif",shape=box ]
+
+    subgraph cluster_useast {
+        subgraph cluster_useast1_t {            
+            label=<<b>xx</b>>;
+
+            a [label="tx-billing-ev"];
+            b [label="xxxxx"];
+            c [label="xx-xxxxxxxx"];
+            d [label="xxxx-xx-xxx"];
+            e [label="xx-xxxxxxx-xxxxxxxxx"];
+            f [label="xx-xxxxx-xxx"];
+        }
+
+        subgraph cluster_useast1_i {            
+            label=<<b>xxxxxxxx</b>>;  
+
+            g [label="xxxxxxxx-xxx"];
+        }
+
+        subgraph cluster_useast1_p {            
+            label=<<b>pricing-platform</b>>;
+            fontsize=24;
+            margin=10;
+            
+            h [label="billable-items-servi"];
+            i [label="xx-xxxxx-xxx"];
+        }
+
+        subgraph cluster_useast1_b {            
+            label=<<b>xxxxxxx-xxxxxxxx</b>>;       
+
+            j [label="xxxxxxx-xxxx-xxxxxx"];
+            k [label="xxxx-xx"];
+        }
+
+        subgraph cluster_useast1_f {            
+            label=<<b>xx</b>>;
+            fontsize=24;
+            margin=10;
+            
+            l [label="xx-xxxxxxxx"];
+        }
+
+        subgraph cluster_useast1_d {            
+            label=<<b>data-platform-kafka</b>>;
+            fontsize=24;
+            margin=10;
+            
+            m [label="xx-xxxxxx-xxxxxx-xxx"];
+        }
+
+        subgraph cluster_useast1_s {            
+            label=<<b>xxxxxx</b>>;
+            fontsize=24;
+            margin=10;
+            
+            n [label="xxxxx-xxx-xxxxxxx"];
+        }
+
+        subgraph cluster_useast1_w {                    
+            label=<<b>xxxxxxxx</b>>;
+            fontsize=24;
+            margin=10;
+            
+            o [label="xxxxxxxx-xxxxxxxx-xxxxxxxxxxxxx-xxx"];
+        }
+
+        p [label="xxxxxxx-xxxxxx-xxx"];
+        q [label="xx-xxxx-xxx"];
+   }
+
+    i -> a;
+}

@@ -1,0 +1,106 @@
+digraph g {
+  fontname=Helvetica;
+  compound=true;
+  graph [
+
+    rankdir=LR
+    splines=false overlap=false 
+    ranksep=0.0 nodesep=0.5
+  ]
+
+
+  node[style=filled shape=underline penwidth=1 fillcolor="white" fontname = "Courier New"];
+
+  node [label =<
+    <table border="0" cellborder="0" cellpadding="3" bgcolor="white">
+    <tr>
+      <td align="center" bgcolor="white"><font color="white">123456</font></td>
+    </tr>
+    </table>> ];
+
+  NF1 NF2 NF3 NF4;
+  
+  node [label =<
+    <table border="0" cellborder="1" cellpadding="3" bgcolor="white">
+    <tr>
+      <td align="center" bgcolor="gray80"><font color="gray80">123456</font></td>
+    </tr>
+    </table>> ];
+
+  NL1 NL2 NL3 NL4;
+
+  node [label =<
+    <table border="0" cellborder="1" cellpadding="3" bgcolor="white">
+    <tr>
+      <td align="center" bgcolor="white"><font color="white">123456</font></td>
+    </tr>
+    </table>> ]
+
+  NE1 NE2 NE3 NE4;
+
+  node [shape=plain fontsize=12 fontname=Helvetica label="." style=filled width=1.0 height=0]
+  END_FF [label="1"]
+  END_EF [label="2"]
+
+  END_LF [label="3"]
+
+  END_LE [label="4"]
+  END_EE [label="5"]
+
+  END_LL [label="6"] 
+  
+  subgraph cluster_vehicle_states 
+  {
+    graph [margin=16 peripheries=1 penwidth=0.5]
+    {
+    graph [label="" margin=12 peripheries=1 penwidth=0.5]
+  
+  
+   subgraph cluster_ff {
+    {
+    NF1 -> NF2 [style=solid arrowhead=none]
+    NF2 -> END_FF [style=invis]
+    }
+  }
+
+  subgraph cluster_ef { 
+    {
+    NE4 -> NF4 [style=solid arrowhead=none]
+    NF4 -> END_EF [style=invis]
+  }
+  }
+
+  subgraph cluster_lf { 
+    {
+    NL4 -> NF3 [style=solid arrowhead=none]
+    NF3 -> END_LF [style=invis]
+    }
+  }
+
+
+  subgraph cluster_le { 
+    {
+    NL3 -> NE3 [style=solid arrowhead=none]
+    NE3 -> END_LE [style=invis]
+    }
+  }
+
+    subgraph cluster_ee { 
+    {
+    NE1 -> NE2 [style=solid arrowhead=none]
+    NE2 -> END_EE [style=invis]
+    }
+  }
+
+    subgraph cluster_ll {
+    {
+    NL1 -> NL2 [style=solid arrowhead=none]
+    NL2 -> END_LL [style=invis]
+    }
+  }
+
+  }
+
+  }
+  
+}

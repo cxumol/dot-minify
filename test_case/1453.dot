@@ -1,0 +1,67 @@
+digraph States {
+  graph [compound=true]
+  concentrate=true
+  node [shape="box"]
+  splines=curved
+  ranksep=0.9
+
+  UNINITED -> {LARGE_WINDOW_BITS -> INITIALIZE}
+  INITIALIZE -> METABLOCK_BEGIN -> METABLOCK_HEADER
+  METABLOCK_HEADER -> {{METADATA UNCOMPRESSED} -> METABLOCK_DONE}
+  METABLOCK_DONE -> METABLOCK_BEGIN [constraint="false"]
+  METABLOCK_DONE -> DONE
+
+  subgraph cluster_compressed_metablock {
+    style="rounded"
+    label="COMPRESSED METABLOCK"
+
+    subgraph cluster_command {
+      style="rounded"
+      label="HOT LOOP"
+
+      CMD_BEGIN -> CMD_INNER -> CMD_POST_DECODE_LITERALS -> CMD_POST_WRAP_COPY
+
+      // IO ("write") nodes are not in the hot loop!
+      CMD_INNER_WRITE [style=dashed]
+      CMD_INNER -> CMD_INNER_WRITE
+      CMD_POST_WRITE_1 [style=dashed]
+      CMD_POST_DECODE_LITERALS -> CMD_POST_WRITE_1
+      CMD_POST_WRITE_2 [style=dashed]
+      CMD_POST_WRAP_COPY -> CMD_POST_WRITE_2
+
+      CMD_POST_WRITE_1 -> CMD_BEGIN [constraint="false"]
+      CMD_INNER_WRITE -> {CMD_INNER CMD_POST_DECODE_LITERALS}
+          [constraint="false"]
+      CMD_BEGIN -> CMD_POST_DECODE_LITERALS [constraint="false"]
+      {CMD_POST_WRAP_COPY CMD_POST_DECODE_LITERALS} -> CMD_BEGIN
+          [constraint="false"]
+      CMD_POST_WRITE_2 -> CMD_POST_WRAP_COPY [constraint="false"]
+      {rank=same; CMD_BEGIN; CMD_INNER; CMD_POST_DECODE_LITERALS;
+          CMD_POST_WRAP_COPY}
+      {rank=same; CMD_INNER_WRITE; CMD_POST_WRITE_1; CMD_POST_WRITE_2}
+
+      _METABLOCK_DONE_PORT_ [shape=point style=invis]
+      {CMD_INNER CMD_POST_DECODE_LITERALS CMD_POST_WRAP_COPY
+          CMD_INNER_WRITE CMD_POST_WRITE_1} ->
+              _METABLOCK_DONE_PORT_ [constraint="false" style=invis]
+    }
+
+    HUFFMAN_CODE_0 -> HUFFMAN_CODE_1 -> HUFFMAN_CODE_2 -> HUFFMAN_CODE_3
+    HUFFMAN_CODE_0 -> METABLOCK_HEADER_2 -> CONTEXT_MODES -> CONTEXT_MAP_1
+    CONTEXT_MAP_1 -> CONTEXT_MAP_2 -> TREE_GROUP -> CMD_BEGIN
+
+    HUFFMAN_CODE_3 -> HUFFMAN_CODE_0 [constraint="false"]
+    {rank=min; HUFFMAN_CODE_0; HUFFMAN_CODE_1; HUFFMAN_CODE_2; HUFFMAN_CODE_3}
+    {rank=same; METABLOCK_HEADER_2; CONTEXT_MODES; CONTEXT_MAP_1; CONTEXT_MAP_2;
+        TREE_GROUP}
+  }
+  METABLOCK_HEADER -> HUFFMAN_CODE_0
+
+  _METABLOCK_DONE_PORT_ -> METABLOCK_DONE [constraint="false" ltail=cluster_command]
+
+  {rank=min; UNINITED; LARGE_WINDOW_BITS; INITIALIZE; METABLOCK_HEADER;
+      METABLOCK_BEGIN; METABLOCK_DONE; DONE}
+
+  UNINITED [shape=Mdiamond];
+  DONE [shape=Msquare];
+}

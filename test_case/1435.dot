@@ -1,0 +1,65 @@
+digraph GraphMain {
+graph [
+compound=true, dpi=150, fontsize=8, nodesep=1, ranksep=1];
+node [
+fontsize=8];
+subgraph cluster_Host_14MI233 {
+graph [
+label="14MI233"];
+subgraph cluster_Proc_14MI233_13276 {
+graph [
+bgcolor=lightblue, label="AppManager\n(13276)"];
+0[label="AppManager\n(13276)", shape=point, style=invis];
+}
+subgraph cluster_Proc_14MI233_13752 {
+graph [
+bgcolor=pink, label="AppLauncher\n(13752)"];
+1[label="AppLauncher\n(13752)", shape=point, style=invis];
+}
+subgraph cluster_Proc_14MI233_19436 {
+graph [
+bgcolor=lemonchiffon, label="Simu[Sine]\n(19436)"];
+2[label="Simu[Sine]\n(19436)", shape=point, style=invis];
+9[label=RDMA];
+}
+subgraph cluster_Proc_14MI233_19484 {
+graph [
+bgcolor=chartreuse, label="Sched[14MI233]\n(19484)"];
+3[label="Sched[14MI233]\n(19484)", shape=point, style=invis];
+8[label=RDMA];
+}
+subgraph cluster_Proc_14MI233_19812 {
+graph [
+bgcolor=chartreuse, label="Dist[14MI233]\n(19812)"];
+4[label="Dist[14MI233]\n(19812)", shape=point, style=invis];
+}
+subgraph cluster_Proc_14MI233_20900 {
+graph [
+bgcolor=grey80, label=20900];
+5[label=20900, shape=point, style=invis];
+}
+subgraph cluster_Proc_14MI233_21704 {
+graph [
+bgcolor=pink, label="AlysaManager[2]\n(21704)"];
+6[label="AlysaManager[2]\n(21704)", shape=point, style=invis];
+10[label=RDMA];
+}
+subgraph cluster_Proc_14MI233_23428 {
+graph [
+bgcolor=lemonchiffon, label="Simu[BigPing]\n(23428)"];
+7[label="Simu[BigPing]\n(23428)", shape=point, style=invis];
+11[label=RDMA];
+}
+0 -> 1[color=blue, lhead=cluster_Proc_14MI233_13752, ltail=cluster_Proc_14MI233_13276];
+1 -> 6[color=blue, lhead=cluster_Proc_14MI233_21704, ltail=cluster_Proc_14MI233_13752];
+6 -> 2[color=blue, lhead=cluster_Proc_14MI233_19436, ltail=cluster_Proc_14MI233_21704];
+6 -> 3[color=blue, lhead=cluster_Proc_14MI233_19484, ltail=cluster_Proc_14MI233_21704];
+6 -> 4[color=blue, lhead=cluster_Proc_14MI233_19812, ltail=cluster_Proc_14MI233_21704];
+6 -> 7[color=blue, lhead=cluster_Proc_14MI233_23428, ltail=cluster_Proc_14MI233_21704];
+8 -> 9[color=goldenrod1];
+8 -> 10[color=goldenrod1, dir=both];
+8 -> 11[color=goldenrod1];
+10 -> 9[color=goldenrod1];
+10 -> 11[color=goldenrod1];
+}
+}

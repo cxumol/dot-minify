@@ -1,0 +1,18 @@
+digraph {
+  splines=true;
+
+  // Set the node size slightly larger than the default. This results in a `sw`
+  // compass point which will be slightly more than 16.5 points from the center
+  // instead of slightly less. Currently this value is rounded to the nearest
+  // integer, i.e., 17. This will be outside the obstacles created by
+  // `makeObstacle` in `lib/neatogen/neatosplines.c` which `addEndpoint` in
+  // `lib/neatogen/multispline.c` cannot handle.
+  node [width=0.78, height=0.53];
+
+  // Ensure the outline is exactly the node shape without any allocated extra
+  // vertices representing the outline, i.e., the outermost periphery with
+  // penwidth taken into account
+  node [peripheries=0];
+
+  node1 -> node2:sw;
+}

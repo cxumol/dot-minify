@@ -1,0 +1,7 @@
+digraph {
+    layout = neato
+    splines = true
+    edge [len = 2]
+    a -> b
+    b -> a
+}

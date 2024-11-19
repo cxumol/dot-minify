@@ -1,0 +1,40 @@
+digraph {
+    graph [
+           // dim=3;
+           // model="subset";
+           overlap=false;
+           splines=true;
+           K=32;
+           repulsiveforce=100;
+    ];
+    node [
+          shape=circle;
+    ];
+	0 [label=0]
+	0 -> 3
+	0 -> 9
+	0 -> 12
+	0 -> 13
+	0 -> 24
+	0 -> 58
+	1 [label=1]
+	1 -> 0
+	1 -> 5
+	1 -> 9
+	1 -> 10
+	1 -> 12
+	1 -> 19
+	1 -> 21
+	1 -> 24
+	1 -> 28
+	1 -> 58
+	2 [label=2]
+	2 -> 3
+	2 -> 4
+	2 -> 6
+	2 -> 8
+	2 -> 12
+	2 -> 35
+	2 -> 40
+	2 -> 41
+}

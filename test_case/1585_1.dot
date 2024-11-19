@@ -1,0 +1,8 @@
+digraph G {
+  subgraph cluster_0 {
+    b;c;d;
+  }
+  a -> b;
+  a -> c;
+  a -> d;
+}

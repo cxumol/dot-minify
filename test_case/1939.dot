@@ -1,0 +1,24 @@
+digraph G {
+  subgraph cluster0 {
+    a1;
+    a2;
+    a3 [group="y"];
+    a4 [group="y"];
+  }
+  subgraph cluster1 {
+    b1 [group="y"];
+    b2 [group="y"];
+    b3;
+  }
+  // from sources
+  a1 -> a2;
+  b3 -> a2;
+  b3 -> b2;
+
+  // the path
+  b2 -> a4;
+  a4 -> a3;
+
+  // to sink (a2 is also sink)
+  a3 -> b1;
+}

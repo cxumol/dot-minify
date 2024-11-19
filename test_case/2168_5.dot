@@ -1,0 +1,17 @@
+digraph {
+  splines=ortho;
+  // Set the penwidth so large that the obstacles created by `makeObstacle` in
+  // `lib/neatogen/neatosplines.c` overlap, and `_spline_edges` issues this
+  // warning:
+  //
+  // "Warning: the bounding boxes of some nodes touch - falling back to straight line edges"
+  //
+  // This is admittedly a bit strange, but it is a way to determine that the
+  // obstacles are created with penwith taken into account when
+  // `splines=ortho`. Unlike the other testcases for #2168, we cannot use
+  // compass ports since they do not work correctly when `splines=ortho`. In
+  // the future, if the impact of the obstacles is better understood, it might
+  // be possible to create a more intuitive test case.
+  node [shape=box penwidth=12];
+  node1 -> node2;
+}

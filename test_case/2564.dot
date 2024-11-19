@@ -1,0 +1,6 @@
+strict graph {
+       graph [ overlap="scale" ]
+       1
+       2
+       1 -- 2
+}

@@ -1,0 +1,22 @@
+digraph C {
+
+  subgraph cluster1 {
+    a1 a2 a3 a4
+  }
+  subgraph cluster2 {
+  b1 b2 b3 b4
+  }
+  subgraph cluster3 {
+   c1 c2 c3
+  }
+  { rank=same a1 b1}
+  { rank=same b2 c2 }
+  { rank=same a3 b3 c3 }
+
+    edge[color=red]
+    a1 -> a2 -> a3
+    edge[color=green]
+    a1 -> b1 -> c1
+    edge[color=blue]
+    c1->c2->c3
+}

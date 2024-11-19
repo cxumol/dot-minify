@@ -1,0 +1,11 @@
+digraph {
+  splines=true;
+
+  // Set the penwidth so that the compass point will be further away from the
+  // node center. This will be outside the obstacles currently created by
+  // `makeObstacle` in `lib/neatogen/neatosplines.c` which `addEndpoint` in
+  // `lib/neatogen/multispline.c` cannot handle.
+  node [penwidth=4];
+
+  node1 -> node2:sw;
+}

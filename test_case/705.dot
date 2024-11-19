@@ -1,0 +1,6 @@
+digraph test {
+  {rank=same ab ba ca }
+  subgraph clustera {aa ab aa -> ab }
+  subgraph clusterb {ba bb ba -> bb }
+  subgraph clusterc {ca cb ca -> cb }
+}

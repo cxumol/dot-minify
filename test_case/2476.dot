@@ -1,0 +1,65 @@
+digraph S_ZanyRabbit {
+    subgraph "cluster_Main" {
+        "Main";
+        "Main_entry";
+        "s_DizzyCat";
+        subgraph "cluster_Main.s_BoredZebra" {
+            subgraph "cluster_Main.s_BoredZebra.s_EnergeticFinch" {
+                "s_EnergeticFinch.s_GlamorousKoala";
+                "s_EnergeticFinch.s_GrotesqueWolf";
+                "s_EnergeticFinch.s_ConfusedTiger";
+                subgraph "cluster_Main.s_BoredZebra.s_EnergeticFinch.s_DelightfulBear" {
+                    "s_EnergeticFinch.s_DelightfulBear";
+                }
+                subgraph "cluster_Main.s_BoredZebra.s_EnergeticFinch.s_EmbarrassedMeerkat" {
+                    "s_EnergeticFinch.s_EmbarrassedMeerkat";
+                }
+                "s_EnergeticFinch.s_MotionlessCobra";
+                "s_EnergeticFinch.s_FriendlyDuck";
+                "s_EnergeticFinch.s_ModernManatee";
+            }
+            "s_ZealousCod.s_WorriedKoala.s_InnocentArmadillo2";
+            "s_ZealousCod.s_WanderingFinch";
+            "s_ZealousCod.s_TerriblePeacock";
+            "s_ColourfulCrab.s_ArrogantMouse";
+            "s_ColourfulCrab.s_WanderingFinch";
+            "s_ColourfulCrab.s_OutrageousHamster";
+            "s_HelplessPanda.s_CalmGoat.s_InnocentArmadillo2";
+            "s_HelplessPanda.s_WanderingFinch";
+            "s_HelplessPanda.s_OutstandingBuffalo";
+            "s_HelplessPanda.s_CooperativeMosquito";
+            "s_SillyLocust.s_MotionlessHare.s_UnusualMoose";
+            "s_SillyLocust.s_MotionlessHare.s_CalmGoat";
+            "s_SillyLocust.s_MotionlessHare.s_CalmGoat.s_InnocentArmadillo2";
+        }
+        "s_GloriousOwl";
+        "s_SuccessfulCricket";
+    }
+    
+    "Main" -> "s_SuccessfulCricket";
+    "Main_entry" -> "s_DizzyCat";
+    "s_EnergeticFinch.s_GlamorousKoala" -> "s_EnergeticFinch.s_GrotesqueWolf";
+    "s_EnergeticFinch.s_GrotesqueWolf" -> "s_EnergeticFinch.s_ConfusedTiger";
+    "s_EnergeticFinch.s_GrotesqueWolf" -> "s_EnergeticFinch.s_MotionlessCobra";
+    "s_EnergeticFinch.s_DelightfulBear" -> "s_EnergeticFinch.s_GlamorousKoala";
+    "s_EnergeticFinch.s_EmbarrassedMeerkat" -> "s_EnergeticFinch.s_MotionlessCobra";
+    "s_EnergeticFinch.s_EmbarrassedMeerkat" -> "s_EnergeticFinch.s_FriendlyDuck";
+    "s_EnergeticFinch.s_MotionlessCobra" -> "s_EnergeticFinch.s_FriendlyDuck";
+    "s_EnergeticFinch.s_MotionlessCobra" -> "s_EnergeticFinch.s_EmbarrassedMeerkat" [label = "Funny";];
+    "s_EnergeticFinch.s_ModernManatee" -> "s_GloriousOwl";
+    "s_ZealousCod.s_WorriedKoala.s_InnocentArmadillo2" -> "s_SuccessfulCricket";
+    "s_ZealousCod.s_WanderingFinch" -> "s_SuccessfulCricket";
+    "s_ZealousCod.s_TerriblePeacock" -> "s_GloriousOwl";
+    "s_ColourfulCrab.s_ArrogantMouse" -> "s_ColourfulCrab.s_WanderingFinch";
+    "s_ColourfulCrab.s_WanderingFinch" -> "s_ColourfulCrab.s_OutrageousHamster";
+    "s_ColourfulCrab.s_WanderingFinch" -> "s_SuccessfulCricket";
+    "s_ColourfulCrab.s_OutrageousHamster" -> "s_GloriousOwl";
+    "s_HelplessPanda.s_CalmGoat.s_InnocentArmadillo2" -> "s_SuccessfulCricket";
+    "s_HelplessPanda.s_WanderingFinch" -> "s_HelplessPanda.s_OutstandingBuffalo";
+    "s_HelplessPanda.s_OutstandingBuffalo" -> "s_HelplessPanda.s_CooperativeMosquito";
+    "s_HelplessPanda.s_OutstandingBuffalo" -> "s_GloriousOwl";
+    "s_HelplessPanda.s_CooperativeMosquito" -> "s_GloriousOwl";
+    "s_SillyLocust.s_MotionlessHare.s_UnusualMoose" -> "s_SillyLocust.s_MotionlessHare.s_CalmGoat";
+    "s_SillyLocust.s_MotionlessHare.s_CalmGoat" -> "s_SillyLocust.s_MotionlessHare.s_CalmGoat.s_InnocentArmadillo2";
+    "s_SillyLocust.s_MotionlessHare.s_CalmGoat.s_InnocentArmadillo2" -> "s_SuccessfulCricket";
+}

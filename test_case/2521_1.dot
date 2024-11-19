@@ -1,0 +1,39 @@
+digraph {
+  node [shape=box];
+
+  subgraph cluster1{
+  peripheries=0       // eye of the beholder feature
+  "TL 1 event 1" [ZZgroup=TL1];
+  "TL 1 event 2" [ZZgroup=TL1];
+  "TL 1 event 3" [ZZgroup=TL1];
+  }
+  subgraph cluster2{
+  peripheries=0
+  "TL 2 event 1" [ZZgroup=TL2];
+  "TL 2 event 2" [ZZgroup=TL2];
+  "TL 2 event 3" [ZZgroup=TL2];
+  }
+  subgraph cluster3{
+  peripheries=0
+  "TL 3 event 1" [ZZgroup=TL3];
+  "TL 3 event 2" [ZZgroup=TL3];
+  "TL 3 event 3" [ZZgroup=TL3];
+  }
+  
+  "TL 1 event 1" -> "TL 1 event 2" [color=red];
+  "TL 1 event 2" -> "TL 1 event 3" [color=red];
+
+  "TL 2 event 1" -> "TL 2 event 2" [color=red];
+  "TL 2 event 2" -> "TL 2 event 3" [color=red];
+
+  "TL 3 event 1" -> "TL 3 event 2" [color=red];
+  "TL 3 event 2" -> "TL 3 event 3" [color=red];
+  "TL 2 event 1" -> "TL 1 event 1";
+  "TL 1 event 1" -> "TL 2 event 2";
+  "TL 1 event 2" -> "TL 2 event 3";
+  "TL 3 event 1" -> "TL 1 event 2";
+  "TL 2 event 2" -> "TL 3 event 1";
+  "TL 2 event 3" -> "TL 1 event 3";
+  "TL 1 event 3" -> "TL 3 event 2";
+  "TL 3 event 2" -> "TL 3 event 3";
+}
