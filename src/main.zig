@@ -225,7 +225,7 @@ pub fn main() !void {
     var writer = std.io.getStdOut().writer();
 
     const initial_size = 4096;
-    var input = std.ArrayList(u8).initCapacity(allocator, initial_size);
+    var input = try std.ArrayList(u8).initCapacity(allocator, initial_size);
     defer input.deinit();
 
     var buffer: [4096]u8 = undefined;
