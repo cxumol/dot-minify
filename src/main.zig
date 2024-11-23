@@ -30,6 +30,7 @@ const MinifierState = struct {
     prev_char: u8 = '\n', // assume newline before first line
     pprev_char: u8 = '\n', // not always updated in loop
     next_char: u8 = 0, // not always updated in loop
+    dealed_WhitespaceBefore: bool = false,
     is_line_start: bool = true,
 };
 
@@ -117,6 +118,7 @@ fn handleWhitespace(state: *MinifierState, c: u8, minified: *std.ArrayList(u8)) 
 
 fn handleWhitespaceBefore(state: *MinifierState, c: u8, minified: *std.ArrayList(u8)) !void {
     if (state.quote.in_quotes or state.html.in_html) return;
+    state.dealed_WhitespaceBefore = false;
     switch (c) {
         ';', '[', ']', '{', '}', '=', '-' => {
             // " ->", " --"
@@ -127,6 +129,7 @@ fn handleWhitespaceBefore(state: *MinifierState, c: u8, minified: *std.ArrayList
             }
             minified.items.len = start;
             try minified.append(c);
+            state.dealed_WhitespaceBefore = true;
         },
         else => {},
     }
@@ -172,10 +175,8 @@ pub fn minifyDot(allocator: std.mem.Allocator, input: []const u8) ![]u8 {
 
             if (i + 1 < input.len) state.next_char = input[i + 1] else state.next_char = 0;
             try handleWhitespaceBefore(&state, c, &minified);
-            switch (c) {
-                ';', '[', ']', '{', '}', '=', '-' => {},
-                else => try minified.append(c),
-            }
+            if (state.dealed_WhitespaceBefore == true) break :handles;
+            try minified.append(c);
         }
         state.prev_char = c;
     }
