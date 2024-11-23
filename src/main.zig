@@ -102,24 +102,27 @@ fn handleHTML(state: *MinifierState, c: u8, minified: *std.ArrayList(u8)) !void 
 
 // Handles whitespace with context awareness.
 fn handleWhitespace(state: *MinifierState, c: u8, minified: *std.ArrayList(u8)) !void {
-    if (state.quote.in_quotes and state.html.in_html) return;
+    if (state.quote.in_quotes or state.html.in_html) return;
     if (std.ascii.isWhitespace(c) and !std.ascii.isWhitespace(state.prev_char)) {
         switch (state.prev_char) {
-            ';', '[', ']', '{', '}' => {},
+            ';', '[', ']', '{', '}', '=' => {},
             else => try minified.append(' '),
         }
     }
 }
 
-// Handles attribute processing with context awareness.
-fn handleAttribute(state: *MinifierState, c: u8, minified: *std.ArrayList(u8)) !void {
-    if (c == '=' and !state.quote.in_quotes and !state.html.in_html) {
-        var start = minified.items.len;
-        while (start > 0 and minified.items[start - 1] == ' ') {
-            start -= 1;
-        }
-        minified.items.len = start;
-        try minified.append(c);
+fn handleWhitespaceBefore(state: *MinifierState, c: u8, minified: *std.ArrayList(u8)) !void {
+    if (state.quote.in_quotes or state.html.in_html) return;
+    switch (c) {
+        ';', '[', ']', '{', '}', '=' => {
+            var start = minified.items.len;
+            while (start > 0 and minified.items[start - 1] == ' ') {
+                start -= 1;
+            }
+            minified.items.len = start;
+            try minified.append(c);
+        },
+        else => {},
     }
 }
 
@@ -135,7 +138,12 @@ pub fn minifyDot(allocator: std.mem.Allocator, input: []const u8) ![]u8 {
             if (c == '\n') {
                 // ending of singline comment -> state modify; better to be in handle
                 if (state.comment.in_comment and (state.comment.type == .singleLine or state.comment.type == .preprocessor)) state.comment.in_comment = false;
-                if (!state.comment.in_comment and !state.quote.in_quotes) try minified.append(' ');
+                if (!state.comment.in_comment and !state.quote.in_quotes) {
+                    switch (state.prev_char) {
+                        ';', '[', ']', '{', '}', '\n' => {},
+                        else => try minified.append(' '),
+                    }
+                }
                 break :handles;
             }
             // state.is_line_start
@@ -154,8 +162,11 @@ pub fn minifyDot(allocator: std.mem.Allocator, input: []const u8) ![]u8 {
             try handleWhitespace(&state, c, &minified);
             if (std.ascii.isWhitespace(c)) break :handles;
 
-            try handleAttribute(&state, c, &minified);
-            if (c != '=') try minified.append(c);
+            try handleWhitespaceBefore(&state, c, &minified);
+            switch (c) {
+                ';', '[', ']', '{', '}', '=' => {},
+                else => try minified.append(c),
+            }
         }
         state.prev_char = c;
     }
