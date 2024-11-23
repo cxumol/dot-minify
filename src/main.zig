@@ -103,7 +103,7 @@ fn handleHTML(state: *MinifierState, c: u8, minified: *std.ArrayList(u8)) !void 
 
 // Handles whitespace with context awareness.
 fn handleWhitespace(state: *MinifierState, c: u8, minified: *std.ArrayList(u8)) !void {
-    if (std.ascii.isWhitespace(c) and state.prev_char != '\n' and !std.ascii.isWhitespace(state.prev_char) and !state.quote.in_quotes and !state.html.in_html) {
+    if (std.ascii.isWhitespace(c) and !std.ascii.isWhitespace(state.prev_char) and !state.quote.in_quotes and !state.html.in_html) {
         switch (state.prev_char) {
             ';', '[', ']', '{', '}' => {},
             else => try minified.append(' '),
@@ -123,62 +123,16 @@ fn handleAttribute(state: *MinifierState, c: u8, minified: *std.ArrayList(u8)) !
     }
 }
 
-// Handles semicolon optimization with more context.
-fn handleSemicolon(state: *MinifierState, c: u8, line: []const u8, minified: *std.ArrayList(u8)) !void {
-    if (c == ';' and !state.quote.in_quotes and !state.html.in_html) {
-        var next_non_whitespace: ?u8 = null;
-        if (line.len > 0) {
-            for (line[1..]) |nc| {
-                if (!std.ascii.isWhitespace(nc)) {
-                    next_non_whitespace = nc;
-                    break;
-                }
-            }
-        }
-        if (next_non_whitespace != '}') try minified.append(c);
-    }
-}
-
 pub fn minifyDot(allocator: std.mem.Allocator, input: []const u8) ![]u8 {
     var minified = try std.ArrayList(u8).initCapacity(allocator, input.len);
     defer minified.deinit();
 
     var state = MinifierState{};
 
-    var line_start: usize = 0;
-    for (0..input.len) |i| {
-        if (input[i] == '\n') {
-            const line = input[line_start .. i + 1]; // include \n for line termination based detection
-            for (line) |c| {
-                try handleComment(&state, c, &minified);
-                if (!state.comment.in_comment) {
-                    try handleQuotes(&state, c, &minified);
-                    if (!state.quote.in_quotes) {
-                        try handleHTML(&state, c, &minified);
-                        if (!state.html.in_html) {
-                            try handleWhitespace(&state, c, &minified);
-                            if (!std.ascii.isWhitespace(c)) {
-                                try handleAttribute(&state, c, &minified);
-                                try handleSemicolon(&state, c, line, &minified);
-                                if (c != '=' and c != ';' or (c == ';' and (line.len == 0 or !std.ascii.isWhitespace(line[0])))) {
-                                    if (!state.quote.in_quotes and !state.html.in_html) try minified.append(c);
-                                }
-                            } else if (c != '#' and c != '/') { // edge case: beginning of file
-                                try minified.append(c);
-                            }
-                        }
-                    }
-                }
-                state.prev_char = c;
-            }
-            line_start = i + 1; // Move to the beginning of the next line
-        }
-    }
-
-    // Handle the last line if it doesn't end with '\n'
-    if (line_start < input.len) {
-        const line = input[line_start..];
-        for (line) |c| {
+    // var line_start: usize = 0;
+    for (input) |c| {
+        handles: { // handles
+            if (c == '\n') break :handles;
             try handleComment(&state, c, &minified);
             if (!state.comment.in_comment) {
                 try handleQuotes(&state, c, &minified);
@@ -188,18 +142,14 @@ pub fn minifyDot(allocator: std.mem.Allocator, input: []const u8) ![]u8 {
                         try handleWhitespace(&state, c, &minified);
                         if (!std.ascii.isWhitespace(c)) {
                             try handleAttribute(&state, c, &minified);
-                            try handleSemicolon(&state, c, line, &minified);
-                            if (c != ';' or (c == ';' and (line.len == 0 or !std.ascii.isWhitespace(line[0])))) {
-                                if (!state.quote.in_quotes and !state.html.in_html) {
-                                    try minified.append(c);
-                                }
-                            }
+                            if (c != '=' and !state.quote.in_quotes and !state.html.in_html) try minified.append(c);
                         }
                     }
                 }
             }
-            state.prev_char = c;
         }
+        state.prev_char = c;
+        // line_start = i + 1; // Move to the beginning of the next line
     }
 
     return minified.toOwnedSlice();
