@@ -16,4 +16,4 @@ jobs:
     - name: Test
       shell: bash
       run: |
-        zig test src/test.zig
+        zig build test
