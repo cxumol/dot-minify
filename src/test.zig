@@ -47,7 +47,7 @@ test "minify and validate .dot files" {
     std.debug.print("\n\n\nTest Complete: Pass/Total: {d}/{d}; Failed: {d}\n\n\n", .{ test_case_count - fail_case_count, test_case_count, fail_case_count });
 }
 
-fn minify_and_validate_file(file_name: []const u8) !void {
+pub fn minify_and_validate_file(file_name: []const u8) !void {
     const allocator = std.heap.page_allocator;
 
     var dir = fs.cwd().openDir("test_case", .{ .iterate = true }) catch {
