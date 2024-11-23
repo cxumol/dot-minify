@@ -11,6 +11,14 @@ test "minify and validate .dot files" {
     // defer _ = gpa.deinit();
     // const allocator = gpa.allocator();
 
+    var arena = std.heap.ArenaAllocator.init(std.heap.page_allocator);
+    defer arena.deinit();
+    const alloc = arena.allocator();
+
+    std.debug.print("cwd: {s}\n", .{
+        try std.fs.cwd().realpathAlloc(alloc, "."),
+    });
+
     var dir = fs.cwd().openDir("test_case", .{ .iterate = true }) catch {
         std.log.err("Failed to open directory: test_case\n", .{});
         return;
@@ -49,9 +57,6 @@ test "minify and validate .dot files" {
 
 pub fn minify_and_validate_file(file_name: []const u8) !void {
     const allocator = std.heap.page_allocator;
-    std.log.info("cwd: {s}\n", .{
-        try std.fs.cwd().realpathAlloc(allocator, "."),
-    });
     var dir = fs.cwd().openDir("test_case", .{ .iterate = true }) catch {
         std.log.err("Failed to open directory: test_case\n", .{});
         return;
