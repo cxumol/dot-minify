@@ -6,7 +6,7 @@ While Graphviz provides [a pretty-printing tool](https://graphviz.org/docs/cli/n
 
 This tool minimizes .dot text to reduce data size.
 
-## Running the program
+## Run the program natively
 
 > It takes input from **stdin** and outputs to **stdout**.
 
