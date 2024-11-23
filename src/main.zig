@@ -33,7 +33,7 @@ const MinifierState = struct {
 
 // Handles the logic for comment processing.
 fn handleComment(state: *MinifierState, c: u8, minified: *std.ArrayList(u8)) !void {
-    if (state.quote.in_quotes and state.html.in_html) return;
+    if (state.quote.in_quotes or state.html.in_html) return;
     if (state.comment.in_comment) {
         const comment_type = state.comment.type orelse return;
         switch (comment_type) {
@@ -133,6 +133,7 @@ pub fn minifyDot(allocator: std.mem.Allocator, input: []const u8) ![]u8 {
     for (input) |c| {
         handles: { // handles
             if (c == '\n') {
+                if (state.comment.in_comment and (state.comment.type == .singleLine or state.comment.type == .preprocessor)) state.comment.in_comment = false;
                 if (!state.comment.in_comment and !state.quote.in_quotes) try minified.append(' ');
                 break :handles;
             }
