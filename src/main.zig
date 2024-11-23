@@ -121,8 +121,7 @@ fn handleWhitespaceBefore(state: *MinifierState, c: u8, minified: *std.ArrayList
     state.dealed_WhitespaceBefore = false;
     switch (c) {
         ';', '[', ']', '{', '}', '=', '-' => {
-            // " ->", " --"
-            if (c == '-' and !(state.next_char == '>' or state.next_char == '-')) return;
+            if (c == '-' and !(state.next_char == '>' or state.next_char == '-')) return; // " ->", " --"
             var start = minified.items.len;
             while (start > 0 and minified.items[start - 1] == ' ') {
                 start -= 1;
