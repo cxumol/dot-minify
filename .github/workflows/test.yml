@@ -15,4 +15,4 @@ jobs:
         version: "0.13.0"
     - name: Build Scripts
       run: |
-        zig test src/test.zig
+        zig test src/test.zig 2>&1
