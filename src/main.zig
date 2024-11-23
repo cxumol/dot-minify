@@ -131,8 +131,9 @@ pub fn minifyDot(allocator: std.mem.Allocator, input: []const u8) ![]u8 {
 
     // var line_start: usize = 0;
     for (input) |c| {
-        handles: { // handles
+        handles: { // a block for handy break;
             if (c == '\n') {
+                // ending of singline comment -> state modify; better to be in handle
                 if (state.comment.in_comment and (state.comment.type == .singleLine or state.comment.type == .preprocessor)) state.comment.in_comment = false;
                 if (!state.comment.in_comment and !state.quote.in_quotes) try minified.append(' ');
                 break :handles;
@@ -142,19 +143,19 @@ pub fn minifyDot(allocator: std.mem.Allocator, input: []const u8) ![]u8 {
             if (!std.ascii.isWhitespace(state.prev_char) and state.is_line_start) state.is_line_start = false;
 
             try handleComment(&state, c, &minified);
-            if (!state.comment.in_comment) {
-                try handleQuotes(&state, c, &minified);
-                if (!state.quote.in_quotes) {
-                    try handleHTML(&state, c, &minified);
-                    if (!state.html.in_html) {
-                        try handleWhitespace(&state, c, &minified);
-                        if (!std.ascii.isWhitespace(c)) {
-                            try handleAttribute(&state, c, &minified);
-                            if (c != '=' and !state.quote.in_quotes and !state.html.in_html) try minified.append(c);
-                        }
-                    }
-                }
-            }
+            if (state.comment.in_comment) break :handles;
+
+            try handleQuotes(&state, c, &minified);
+            if (state.quote.in_quotes) break :handles;
+
+            try handleHTML(&state, c, &minified);
+            if (state.html.in_html) break :handles;
+
+            try handleWhitespace(&state, c, &minified);
+            if (std.ascii.isWhitespace(c)) break :handles;
+
+            try handleAttribute(&state, c, &minified);
+            if (c != '=') try minified.append(c);
         }
         state.prev_char = c;
     }
