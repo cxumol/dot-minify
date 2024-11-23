@@ -14,5 +14,6 @@ jobs:
       with: 
         version: "0.13.0"
     - name: Test
+      shell: bash
       run: |
-        zig test src/test.zig 2>&1
+        zig test src/test.zig
