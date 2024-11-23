@@ -32,6 +32,8 @@ digraph G{splines=ortho a->b;}
 
 ## Deploy .wasm to cloudflare workers
 
+> ref: https://blog.cloudflare.com/running-zig-with-wasi-on-cloudflare-workers/
+
 ```bash
 zig build -Doptimize=ReleaseFast -Dtarget=wasm32-wasi --summary all 
 
