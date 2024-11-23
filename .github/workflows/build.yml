@@ -1,0 +1,33 @@
+name: build
+
+on:
+  workflow_dispatch:
+
+jobs:
+  # This workflow contains a single job called "build"
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+    - uses: actions/checkout@v2
+    - uses: mlugg/setup-zig@v1
+      with: 
+        version: "0.13.0"
+    - uses: ndeloof/install-compose-action@v0.0.1
+    - name: Build Scripts
+      run: |
+        zig build -Doptimize=ReleaseSafe --release=small --summary all
+        zig build -Doptimize=ReleaseFast -Dtarget=wasm32-wasi --summary all
+    - uses: actions/upload-artifact@v3
+      with:
+        name: Upload dist
+        path: |
+          zig-out/bin/*
+    - uses: svenstaro/upload-release-action@v2
+      with:
+        repo_token: ${{ secrets.GITHUB_TOKEN }}
+        file: |
+          zig-out/bin/*
+        file_glob: true
+        tag: "latest"
+        overwrite: true
