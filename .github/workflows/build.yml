@@ -13,7 +13,6 @@ jobs:
     - uses: mlugg/setup-zig@v1
       with: 
         version: "0.13.0"
-    - uses: ndeloof/install-compose-action@v0.0.1
     - name: Build Scripts
       run: |
         zig build -Doptimize=ReleaseSafe --release=small --summary all
