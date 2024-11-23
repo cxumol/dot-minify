@@ -145,7 +145,10 @@ pub fn minifyDot(allocator: std.mem.Allocator, input: []const u8) ![]u8 {
         handles: { // a block for handy break;
             if (c == '\n') {
                 // ending of singline comment -> state modify; better to be in handle
-                if (state.comment.in_comment and (state.comment.type == .singleLine or state.comment.type == .preprocessor)) state.comment.in_comment = false;
+                if (state.comment.in_comment and (state.comment.type == .singleLine or state.comment.type == .preprocessor)) {
+                    state.comment.in_comment = false;
+                    break :handles;
+                }
                 if (!state.comment.in_comment and !state.quote.in_quotes) {
                     switch (state.prev_char) {
                         ';', '[', ']', '{', '}', '\n' => {},
