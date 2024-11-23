@@ -32,6 +32,7 @@ const MinifierState = struct {
 
 // Handles the logic for comment processing.
 fn handleComment(state: *MinifierState, c: u8, minified: *std.ArrayList(u8)) !void {
+    if (state.quote.in_quotes and state.html.in_html) return;
     if (state.comment.in_comment) {
         const comment_type = state.comment.type orelse return;
         switch (comment_type) {
@@ -43,7 +44,6 @@ fn handleComment(state: *MinifierState, c: u8, minified: *std.ArrayList(u8)) !vo
             },
         }
     } else {
-        // if (!state.quote.in_quotes and !state.html.in_html) return;
         if (c == '/' and state.prev_char == '/') {
             state.comment.in_comment = true;
             state.comment.type = .singleLine;
@@ -148,7 +148,7 @@ pub fn minifyDot(allocator: std.mem.Allocator, input: []const u8) ![]u8 {
     var line_start: usize = 0;
     for (0..input.len) |i| {
         if (input[i] == '\n') {
-            const line = input[line_start..i];
+            const line = input[line_start .. i + 1]; // include \n for line termination based detection
             for (line) |c| {
                 try handleComment(&state, c, &minified);
                 if (!state.comment.in_comment) {
