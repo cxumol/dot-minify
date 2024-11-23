@@ -28,6 +28,8 @@ const MinifierState = struct {
     quote: QuoteState = .{},
     html: HTMLState = .{},
     prev_char: u8 = '\n', // assume newline before first line
+    pprev_char: u8 = '\n', // not always updated in loop
+    next_char: u8 = 0, // not always updated in loop
     is_line_start: bool = true,
 };
 
@@ -106,6 +108,8 @@ fn handleWhitespace(state: *MinifierState, c: u8, minified: *std.ArrayList(u8)) 
     if (std.ascii.isWhitespace(c) and !std.ascii.isWhitespace(state.prev_char)) {
         switch (state.prev_char) {
             ';', '[', ']', '{', '}', '=' => {},
+            // "-> ", "-- "
+            '>', '-' => if (state.pprev_char != '-') try minified.append(' '),
             else => try minified.append(' '),
         }
     }
@@ -114,7 +118,9 @@ fn handleWhitespace(state: *MinifierState, c: u8, minified: *std.ArrayList(u8)) 
 fn handleWhitespaceBefore(state: *MinifierState, c: u8, minified: *std.ArrayList(u8)) !void {
     if (state.quote.in_quotes or state.html.in_html) return;
     switch (c) {
-        ';', '[', ']', '{', '}', '=' => {
+        ';', '[', ']', '{', '}', '=', '-' => {
+            // " ->", " --"
+            if (c == '-' and !(state.next_char == '>' or state.next_char == '-')) return;
             var start = minified.items.len;
             while (start > 0 and minified.items[start - 1] == ' ') {
                 start -= 1;
@@ -133,7 +139,7 @@ pub fn minifyDot(allocator: std.mem.Allocator, input: []const u8) ![]u8 {
     var state = MinifierState{};
 
     // var line_start: usize = 0;
-    for (input) |c| {
+    for (input, 0..) |c, i| {
         handles: { // a block for handy break;
             if (c == '\n') {
                 // ending of singline comment -> state modify; better to be in handle
@@ -159,12 +165,15 @@ pub fn minifyDot(allocator: std.mem.Allocator, input: []const u8) ![]u8 {
             try handleHTML(&state, c, &minified);
             if (state.html.in_html) break :handles;
 
+            if (i >= 2) state.pprev_char = input[i - 2]; // state.next_char is only used after this line
+
             try handleWhitespace(&state, c, &minified);
             if (std.ascii.isWhitespace(c)) break :handles;
 
+            if (i + 1 < input.len) state.next_char = input[i + 1] else state.next_char = 0;
             try handleWhitespaceBefore(&state, c, &minified);
             switch (c) {
-                ';', '[', ']', '{', '}', '=' => {},
+                ';', '[', ']', '{', '}', '=', '-' => {},
                 else => try minified.append(c),
             }
         }
