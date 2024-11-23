@@ -170,14 +170,14 @@ pub fn minifyDot(allocator: std.mem.Allocator, input: []const u8) ![]u8 {
             try handleHTML(&state, c, &minified);
             if (state.html.in_html) break :handles;
 
-            if (i >= 2) state.pprev_char = input[i - 2]; // state.next_char is only used after this line
-
+            if (i >= 2) state.pprev_char = input[i - 2]; // state.pprev_char is only used by handleWhitespace
             try handleWhitespace(&state, c, &minified);
             if (std.ascii.isWhitespace(c)) break :handles;
 
-            if (i + 1 < input.len) state.next_char = input[i + 1] else state.next_char = 0;
+            if (i + 1 < input.len) state.next_char = input[i + 1] else state.next_char = 0; // state.next_chat is only used by handleWhitespaceBefore
             try handleWhitespaceBefore(&state, c, &minified);
             if (state.dealed_WhitespaceBefore == true) break :handles;
+
             try minified.append(c);
         }
         state.prev_char = c;
