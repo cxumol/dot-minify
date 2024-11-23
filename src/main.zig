@@ -28,6 +28,7 @@ const MinifierState = struct {
     quote: QuoteState = .{},
     html: HTMLState = .{},
     prev_char: u8 = '\n', // assume newline before first line
+    is_line_start: bool = true,
 };
 
 // Handles the logic for comment processing.
@@ -52,7 +53,7 @@ fn handleComment(state: *MinifierState, c: u8, minified: *std.ArrayList(u8)) !vo
             state.comment.in_comment = true;
             state.comment.type = .multiLine;
             if (minified.items.len != 0) minified.items.len -= 1;
-        } else if (c == '#' and state.prev_char == '\n') { // Preprocessor directive at the start of a line.
+        } else if (c == '#' and state.is_line_start) {
             state.comment.in_comment = true;
             state.comment.type = .preprocessor;
         }
@@ -92,18 +93,17 @@ fn handleHTML(state: *MinifierState, c: u8, minified: *std.ArrayList(u8)) !void 
             }
         }
         if (state.html.in_html) try minified.append(c);
-    } else {
-        if (c == '<') {
-            state.html.in_html = true;
-            state.html.tag_depth = 1;
-            try minified.append(c);
-        }
+    } else if (c == '<') {
+        state.html.in_html = true;
+        state.html.tag_depth = 1;
+        try minified.append(c);
     }
 }
 
 // Handles whitespace with context awareness.
 fn handleWhitespace(state: *MinifierState, c: u8, minified: *std.ArrayList(u8)) !void {
-    if (std.ascii.isWhitespace(c) and !std.ascii.isWhitespace(state.prev_char) and !state.quote.in_quotes and !state.html.in_html) {
+    if (state.quote.in_quotes and state.html.in_html) return;
+    if (std.ascii.isWhitespace(c) and !std.ascii.isWhitespace(state.prev_char)) {
         switch (state.prev_char) {
             ';', '[', ']', '{', '}' => {},
             else => try minified.append(' '),
@@ -132,7 +132,14 @@ pub fn minifyDot(allocator: std.mem.Allocator, input: []const u8) ![]u8 {
     // var line_start: usize = 0;
     for (input) |c| {
         handles: { // handles
-            if (c == '\n') break :handles;
+            if (c == '\n') {
+                if (!state.comment.in_comment and !state.quote.in_quotes) try minified.append(' ');
+                break :handles;
+            }
+            // state.is_line_start
+            if (state.prev_char == '\n') state.is_line_start = true;
+            if (!std.ascii.isWhitespace(state.prev_char) and state.is_line_start) state.is_line_start = false;
+
             try handleComment(&state, c, &minified);
             if (!state.comment.in_comment) {
                 try handleQuotes(&state, c, &minified);
@@ -149,7 +156,6 @@ pub fn minifyDot(allocator: std.mem.Allocator, input: []const u8) ![]u8 {
             }
         }
         state.prev_char = c;
-        // line_start = i + 1; // Move to the beginning of the next line
     }
 
     return minified.toOwnedSlice();
