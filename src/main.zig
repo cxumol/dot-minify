@@ -35,23 +35,15 @@ fn handleComment(state: *MinifierState, c: u8, minified: *std.ArrayList(u8)) !vo
     if (state.comment.in_comment) {
         const comment_type = state.comment.type orelse return;
         switch (comment_type) {
-            .singleLine => {
-                if (c == '\n') {
-                    state.comment.in_comment = false;
-                }
+            .singleLine, .preprocessor => {
+                if (c == '\n') state.comment.in_comment = false;
             },
             .multiLine => {
-                if (state.prev_char == '*' and c == '/') {
-                    state.comment.in_comment = false;
-                }
-            },
-            .preprocessor => {
-                if (c == '\n') {
-                    state.comment.in_comment = false;
-                }
+                if (state.prev_char == '*' and c == '/') state.comment.in_comment = false;
             },
         }
     } else {
+        // if (!state.quote.in_quotes and !state.html.in_html) return;
         if (c == '/' and state.prev_char == '/') {
             state.comment.in_comment = true;
             state.comment.type = .singleLine;
@@ -111,10 +103,12 @@ fn handleHTML(state: *MinifierState, c: u8, minified: *std.ArrayList(u8)) !void 
 
 // Handles whitespace with context awareness.
 fn handleWhitespace(state: *MinifierState, c: u8, minified: *std.ArrayList(u8)) !void {
-    if (std.ascii.isWhitespace(c)) {
-        if (state.prev_char != null and !std.ascii.isWhitespace(state.prev_char.?) and !state.quote.in_quotes and !state.html.in_html) {
-            try minified.append(' ');
+    if (std.ascii.isWhitespace(c) and state.prev_char != null and !std.ascii.isWhitespace(state.prev_char.?) and !state.quote.in_quotes and !state.html.in_html) {
+        switch (state.prev_char.?) {
+            ';', '[', ']', '{', '}' => {},
+            else => try minified.append(' '),
         }
+        // try minified.append(' ');
     }
 }
 
@@ -142,9 +136,7 @@ fn handleSemicolon(state: *MinifierState, c: u8, line: []const u8, minified: *st
                 }
             }
         }
-        if (next_non_whitespace != '}') {
-            try minified.append(c);
-        }
+        if (next_non_whitespace != '}') try minified.append(c);
     }
 }
 
