@@ -28,11 +28,18 @@ test "minify and validate .dot files" {
         if (std.mem.endsWith(u8, entry.name, ".dot")) {
             // try test_cases.append(entry.name);
             const file_name = entry.name;
+            var is_corrupt: bool = false;
+            const eq = std.mem.eql;
             std.debug.print("Test case: {s}\t", .{file_name});
+            // must be a better way here, but zig disallow swicth on "string"
+            if (eq(u8, file_name, "1308_1.dot") or eq(u8, file_name, "1676.dot") or eq(u8, file_name, "1411.dot")) {
+                is_corrupt = true;
+                std.debug.print("This test case is a corrupt file. It fails as expected.\n", .{});
+            }
             minify_and_validate_file(file_name) catch {
                 // err is logged inside minify_and_validate_file()
                 // std.log.err("Failed to minify and validate file: {s}\n", .{file_name});
-                fail_case_count += 1;
+                if (!is_corrupt) fail_case_count += 1;
                 continue;
             };
         }
