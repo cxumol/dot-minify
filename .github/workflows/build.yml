@@ -26,8 +26,7 @@ jobs:
     - uses: svenstaro/upload-release-action@v2
       with:
         repo_token: ${{ secrets.GITHUB_TOKEN }}
-        file: |
-          zig-out/bin/*
+        file: zig-out/bin/*
         file_glob: true
         tag: "latest"
         overwrite: true
