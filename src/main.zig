@@ -108,7 +108,6 @@ fn handleWhitespace(state: *MinifierState, c: u8, minified: *std.ArrayList(u8)) 
             ';', '[', ']', '{', '}' => {},
             else => try minified.append(' '),
         }
-        // try minified.append(' ');
     }
 }
 
@@ -162,9 +161,7 @@ pub fn minifyDot(allocator: std.mem.Allocator, input: []const u8) ![]u8 {
                                 try handleAttribute(&state, c, &minified);
                                 try handleSemicolon(&state, c, line, &minified);
                                 if (c != '=' and c != ';' or (c == ';' and (line.len == 0 or !std.ascii.isWhitespace(line[0])))) {
-                                    if (!state.quote.in_quotes and !state.html.in_html) {
-                                        try minified.append(c);
-                                    }
+                                    if (!state.quote.in_quotes and !state.html.in_html) try minified.append(c);
                                 }
                             } else if (state.prev_char == null and c != '#' and c != '/') { // edge case: beginning of file
                                 try minified.append(c);
