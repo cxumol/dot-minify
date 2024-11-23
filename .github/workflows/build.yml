@@ -15,7 +15,7 @@ jobs:
         version: "0.13.0"
     - name: Build Scripts
       run: |
-        zig build -Doptimize=ReleaseSafe --release=small --summary all
+        zig build -Doptimize=ReleaseFast -Dtarget=x86_64-linux-musl --release=small --summary all
         zig build -Doptimize=ReleaseFast -Dtarget=wasm32-wasi --summary all
     - uses: actions/upload-artifact@v3
       with:
